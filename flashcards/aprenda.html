@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Como Montar Memory Cards — Guia Multi-Linguagem</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0d1117;
+      --surface: #161b22;
+      --surface2: #21262d;
+      --border: #30363d;
+      --text: #e6edf3;
+      --muted: #7d8590;
+      --accent: #58a6ff;
+      --green: #3fb950;
+      --yellow: #d29922;
+      --purple: #bc8cff;
+      --red: #ff7b72;
+      --orange: #ffa657;
+      --cyan: #79c0ff;
+      --sidebar-w: 220px;
+    }
+    body { font-family: -apple-system,"Segoe UI",system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100vh; display:flex; flex-direction:column; font-size:15px; line-height:1.6; }
+
+    /* ── Header ── */
+    header { background:var(--surface); border-bottom:1px solid var(--border); padding:0 24px; height:54px; display:flex; align-items:center; justify-content:space-between; position:sticky; top:0; z-index:100; }
+    header h1 { font-size:17px; font-weight:700; }
+    header h1 span { color:var(--accent); }
+    .back-link { font-size:13px; color:var(--accent); text-decoration:none; }
+    .back-link:hover { text-decoration:underline; }
+
+    /* ── Layout ── */
+    .layout { display:flex; flex:1; }
+
+    /* ── Sidebar ── */
+    nav { width:var(--sidebar-w); background:var(--surface); border-right:1px solid var(--border); padding:20px 0; position:sticky; top:54px; height:calc(100vh - 54px); overflow-y:auto; flex-shrink:0; }
+    nav .nav-label { font-size:11px; font-weight:600; text-transform:uppercase; letter-spacing:1px; color:var(--muted); padding:0 16px 8px; }
+    nav a { display:flex; align-items:center; gap:10px; padding:9px 16px; font-size:14px; color:var(--muted); text-decoration:none; border-left:2px solid transparent; transition:color .15s,background .15s,border-color .15s; cursor:pointer; }
+    nav a:hover { color:var(--text); background:var(--surface2); }
+    nav a.active { color:var(--accent); border-left-color:var(--accent); background:var(--surface2); font-weight:600; }
+    .lang-dot { width:10px; height:10px; border-radius:50%; flex-shrink:0; }
+
+    /* ── Content ── */
+    .content { flex:1; overflow-y:auto; }
+    .page { display:none; padding:36px 40px 80px; max-width:920px; }
+    .page.active { display:block; }
+
+    h2 { font-size:24px; font-weight:700; margin-bottom:6px; }
+    .subtitle { color:var(--muted); font-size:14px; margin-bottom:32px; }
+    h3 { font-size:16px; font-weight:600; margin:28px 0 10px; color:var(--accent); }
+
+    /* ── Step badge ── */
+    .step { display:flex; gap:14px; margin-bottom:24px; align-items:flex-start; }
+    .step-num { width:28px; height:28px; border-radius:50%; background:var(--accent); color:#000; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    .step-body { flex:1; }
+    .step-body p { color:var(--muted); font-size:14px; margin-bottom:10px; }
+
+    /* ── Code block ── */
+    .code-wrap { background:var(--surface); border:1px solid var(--border); border-radius:10px; overflow:hidden; margin-bottom:8px; }
+    .code-header { background:var(--surface2); padding:8px 16px; display:flex; align-items:center; justify-content:space-between; border-bottom:1px solid var(--border); }
+    .code-header span { font-size:12px; color:var(--muted); }
+    .copy-btn { background:none; border:1px solid var(--border); color:var(--muted); font-size:12px; padding:3px 10px; border-radius:5px; cursor:pointer; }
+    .copy-btn:hover { color:var(--text); border-color:var(--accent); }
+    pre { padding:20px; overflow-x:auto; font-size:13px; line-height:1.7; font-family:"SF Mono","Fira Code","Consolas",monospace; }
+
+    /* Syntax tokens */
+    .kw  { color:var(--purple); }     /* keyword */
+    .fn  { color:var(--green); }      /* function / selector */
+    .str { color:var(--yellow); }     /* string */
+    .cm  { color:var(--muted); font-style:italic; } /* comment */
+    .num { color:var(--orange); }     /* number */
+    .tag { color:var(--red); }        /* html tag */
+    .at  { color:var(--orange); }     /* attribute */
+    .val { color:var(--yellow); }     /* attr value */
+    .prop{ color:var(--cyan); }       /* css property / js prop */
+    .sel { color:var(--green); }      /* css selector */
+    .pun { color:var(--text); }       /* punctuation */
+
+    /* ── Preview card ── */
+    .preview-box { background:var(--surface2); border:1px solid var(--border); border-radius:10px; padding:32px; display:flex; align-items:center; justify-content:center; margin-bottom:28px; }
+
+    /* Mini flash-card preview (reused across pages) */
+    .mc { width:260px; height:155px; position:relative; perspective:800px; cursor:pointer; }
+    .mc-inner { width:100%; height:100%; position:relative; transform-style:preserve-3d; transition:transform .5s; }
+    .mc.flipped .mc-inner { transform:rotateY(180deg); }
+    .mc-face { position:absolute; inset:0; border-radius:12px; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:16px; backface-visibility:hidden; -webkit-backface-visibility:hidden; }
+    .mc-front { background:linear-gradient(135deg,#1e40af,#3b82f6); color:#fff; }
+    .mc-back  { background:linear-gradient(135deg,#5b21b6,#7c3aed); color:#fff; transform:rotateY(180deg); }
+    .mc-label { font-size:10px; text-transform:uppercase; letter-spacing:1px; opacity:.7; margin-bottom:6px; }
+    .mc-text  { font-size:17px; font-weight:700; text-align:center; }
+    .preview-hint { font-size:12px; color:var(--muted); margin-top:10px; text-align:center; }
+
+    /* ── Language colors ── */
+    .c-html   { background:#e34c26; }
+    .c-css    { background:#264de4; }
+    .c-js     { background:#f7df1e; }
+    .c-py     { background:#3776ab; }
+    .c-react  { background:#61dafb; }
+    .c-ts     { background:#3178c6; }
+    .c-vue    { background:#42b883; }
+    .c-sql    { background:#e97d0a; }
+    .c-go     { background:#00add8; }
+    .c-kotlin { background:#7f52ff; }
+    .c-swift  { background:#f05138; }
+
+    /* ── Tip box ── */
+    .tip { background:rgba(88,166,255,.08); border:1px solid rgba(88,166,255,.25); border-radius:8px; padding:12px 16px; font-size:13px; color:var(--cyan); margin:12px 0 20px; }
+
+    /* ── Compare table ── */
+    table { width:100%; border-collapse:collapse; font-size:13px; margin:12px 0 24px; }
+    th { background:var(--surface2); color:var(--muted); text-align:left; padding:8px 12px; border-bottom:1px solid var(--border); }
+    td { padding:8px 12px; border-bottom:1px solid var(--border); vertical-align:top; }
+    tr:last-child td { border-bottom:none; }
+    td:first-child { color:var(--accent); font-weight:600; }
+
+    @media(max-width:700px){
+      nav { display:none; }
+      .page { padding:20px 16px 60px; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1>Memory<span>Cards</span> — <span style="color:var(--green)">Guia Multi-Linguagem</span></h1>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <a class="back-link" href="guia-completo.html">🌐 Guia Completo</a>
+    <a class="back-link" href="index.html">← App</a>
+  </div>
+</header>
+
+<div class="layout">
+
+  <!-- ── Sidebar ── -->
+  <nav id="nav">
+    <div class="nav-label">Linguagens</div>
+    <a class="active" data-page="html"><span class="lang-dot c-html"></span>HTML</a>
+    <a data-page="css"><span class="lang-dot c-css"></span>CSS</a>
+    <a data-page="js"><span class="lang-dot c-js" style="background:#f7df1e"></span>JavaScript</a>
+    <a data-page="py"><span class="lang-dot c-py"></span>Python</a>
+    <a data-page="react"><span class="lang-dot c-react" style="background:#61dafb"></span>React</a>
+    <a data-page="ts"><span class="lang-dot c-ts"></span>TypeScript</a>
+    <a data-page="vue"><span class="lang-dot c-vue"></span>Vue.js</a>
+    <a data-page="sql"><span class="lang-dot c-sql"></span>SQL</a>
+    <a data-page="go"><span class="lang-dot c-go"></span>Go</a>
+    <a data-page="kotlin"><span class="lang-dot c-kotlin"></span>Kotlin</a>
+    <a data-page="swift"><span class="lang-dot c-swift"></span>Swift</a>
+    <div class="nav-label" style="margin-top:20px;">Comparação</div>
+    <a data-page="compare"><span class="lang-dot" style="background:var(--muted)"></span>Todas as Linguagens</a>
+  </nav>
+
+  <div class="content">
+
+    <!-- ════════════════════════════════════════════
+         PAGE: HTML
+    ════════════════════════════════════════════ -->
+    <div class="page active" id="page-html">
+      <h2>🟠 HTML — Estrutura do Cartão</h2>
+      <p class="subtitle">HTML é a linguagem de marcação da web. Ela define a <strong>estrutura</strong> dos elementos — o esqueleto do seu cartão.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-html">
+            <div class="mc-inner">
+              <div class="mc-face mc-front"><div class="mc-label">Frente</div><div class="mc-text">O que é HTML?</div></div>
+              <div class="mc-face mc-back"> <div class="mc-label">Resposta</div><div class="mc-text">HyperText Markup Language</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <!-- Step 1 -->
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Crie o contêiner de perspectiva</strong>
+          <p>Para o efeito 3D de virada funcionar, o elemento pai precisa de <code>perspective</code>. Pense nisso como a "câmera" que enxerga o cartão em 3D.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>index.html</span><button class="copy-btn" data-copy="step1-html">Copiar</button></div>
+            <pre id="step1-html"><span class="cm">&lt;!-- Contêiner de perspectiva: define o ponto de fuga 3D --&gt;</span>
+<span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"cartao-cena"</span><span class="tag">&gt;</span>
+
+  <span class="cm">&lt;!-- Elemento interno que vai GIRAR --&gt;</span>
+  <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"cartao-interno"</span><span class="tag">&gt;</span>
+
+    <span class="cm">&lt;!-- FRENTE do cartão (pergunta) --&gt;</span>
+    <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"face frente"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;p</span> <span class="at">class</span>=<span class="val">"rotulo"</span><span class="tag">&gt;</span>Pergunta<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p</span> <span class="at">class</span>=<span class="val">"texto"</span><span class="tag">&gt;</span>O que é HTML?<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+    <span class="cm">&lt;!-- VERSO do cartão (resposta) --&gt;</span>
+    <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"face verso"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;p</span> <span class="at">class</span>=<span class="val">"rotulo"</span><span class="tag">&gt;</span>Resposta<span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;p</span> <span class="at">class</span>=<span class="val">"texto"</span><span class="tag">&gt;</span>HyperText Markup Language<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/div&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 2 -->
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Adicione o botão de virada</strong>
+          <p>Um simples botão abaixo do cartão dispara a animação via JavaScript.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>index.html — botão</span><button class="copy-btn" data-copy="step2-html">Copiar</button></div>
+            <pre id="step2-html"><span class="cm">&lt;!-- Botão que chama a função virar() --&gt;</span>
+<span class="tag">&lt;button</span> <span class="at">onclick</span>=<span class="val">"virar()"</span> <span class="at">class</span>=<span class="val">"btn-virar"</span><span class="tag">&gt;</span>
+  Virar Cartão 🔄
+<span class="tag">&lt;/button&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">💡 <strong>Regra de ouro do HTML:</strong> HTML só cuida da <em>estrutura</em> — o que existe e em que ordem. A aparência fica com o CSS, e o comportamento com o JavaScript.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: CSS
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-css">
+      <h2>🔵 CSS — Estilo e Animação 3D</h2>
+      <p class="subtitle">CSS dá aparência e movimento ao cartão. O truque da virada usa apenas 4 propriedades CSS.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-css">
+            <div class="mc-inner">
+              <div class="mc-face mc-front"><div class="mc-label">Frente</div><div class="mc-text">Seletor CSS</div></div>
+              <div class="mc-face mc-back"> <div class="mc-label">Resposta</div><div class="mc-text">.classe, #id, tag</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Perspectiva e tamanho do cartão</strong>
+          <p>O contêiner pai recebe <code>perspective</code> para que o filho pareça girar no espaço 3D.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>style.css — contêiner</span><button class="copy-btn" data-copy="css-s1">Copiar</button></div>
+            <pre id="css-s1"><span class="sel">.cartao-cena</span> <span class="pun">{</span>
+  <span class="prop">width</span><span class="pun">:</span>  <span class="num">280px</span><span class="pun">;</span>
+  <span class="prop">height</span><span class="pun">:</span> <span class="num">160px</span><span class="pun">;</span>
+
+  <span class="cm">/* "Câmera" — quanto menor, mais exagerado o 3D */</span>
+  <span class="prop">perspective</span><span class="pun">:</span> <span class="num">800px</span><span class="pun">;</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Elemento interno que gira</strong>
+          <p><code>transform-style: preserve-3d</code> faz os filhos existirem no mesmo espaço 3D. <code>transition</code> cria a animação suave.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>style.css — interno</span><button class="copy-btn" data-copy="css-s2">Copiar</button></div>
+            <pre id="css-s2"><span class="sel">.cartao-interno</span> <span class="pun">{</span>
+  <span class="prop">width</span><span class="pun">:</span> <span class="num">100%</span><span class="pun">;</span>
+  <span class="prop">height</span><span class="pun">:</span> <span class="num">100%</span><span class="pun">;</span>
+  <span class="prop">position</span><span class="pun">:</span> <span class="kw">relative</span><span class="pun">;</span>
+
+  <span class="cm">/* Mantém filhos no espaço 3D */</span>
+  <span class="prop">transform-style</span><span class="pun">:</span> <span class="kw">preserve-3d</span><span class="pun">;</span>
+
+  <span class="cm">/* Animação de 0.5s com easing suave */</span>
+  <span class="prop">transition</span><span class="pun">:</span> <span class="kw">transform</span> <span class="num">.5s</span> <span class="fn">cubic-bezier</span><span class="pun">(</span><span class="num">.4</span><span class="pun">,</span><span class="num">0</span><span class="pun">,</span><span class="num">.2</span><span class="pun">,</span><span class="num">1</span><span class="pun">);</span>
+<span class="pun">}</span>
+
+<span class="cm">/* Quando a classe "virado" é adicionada pelo JS, o cartão gira 180° */</span>
+<span class="sel">.cartao-interno.virado</span> <span class="pun">{</span>
+  <span class="prop">transform</span><span class="pun">:</span> <span class="fn">rotateY</span><span class="pun">(</span><span class="num">180deg</span><span class="pun">);</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Faces do cartão (frente e verso)</strong>
+          <p><code>backface-visibility: hidden</code> é o segredo — esconde a face quando ela está "de costas" para o usuário.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>style.css — faces</span><button class="copy-btn" data-copy="css-s3">Copiar</button></div>
+            <pre id="css-s3"><span class="sel">.face</span> <span class="pun">{</span>
+  <span class="prop">position</span><span class="pun">:</span> <span class="kw">absolute</span><span class="pun">;</span>
+  <span class="prop">inset</span><span class="pun">:</span> <span class="num">0</span><span class="pun">;</span>               <span class="cm">/* ocupa 100% do pai */</span>
+  <span class="prop">border-radius</span><span class="pun">:</span> <span class="num">12px</span><span class="pun">;</span>
+  <span class="prop">display</span><span class="pun">:</span> <span class="kw">flex</span><span class="pun">;</span>
+  <span class="prop">align-items</span><span class="pun">:</span> <span class="kw">center</span><span class="pun">;</span>
+  <span class="prop">justify-content</span><span class="pun">:</span> <span class="kw">center</span><span class="pun">;</span>
+
+  <span class="cm">/* Esconde a face quando está de costas */</span>
+  <span class="prop">backface-visibility</span><span class="pun">:</span> <span class="kw">hidden</span><span class="pun">;</span>
+  <span class="prop">-webkit-backface-visibility</span><span class="pun">:</span> <span class="kw">hidden</span><span class="pun">;</span>
+<span class="pun">}</span>
+
+<span class="sel">.frente</span> <span class="pun">{</span> <span class="prop">background</span><span class="pun">:</span> <span class="fn">linear-gradient</span><span class="pun">(</span><span class="num">135deg</span><span class="pun">,</span> <span class="val">#1e40af</span><span class="pun">,</span> <span class="val">#3b82f6</span><span class="pun">);</span> <span class="prop">color</span><span class="pun">:</span> <span class="val">#fff</span><span class="pun">;</span> <span class="pun">}</span>
+
+<span class="sel">.verso</span> <span class="pun">{</span>
+  <span class="prop">background</span><span class="pun">:</span> <span class="fn">linear-gradient</span><span class="pun">(</span><span class="num">135deg</span><span class="pun">,</span> <span class="val">#5b21b6</span><span class="pun">,</span> <span class="val">#7c3aed</span><span class="pun">);</span>
+  <span class="prop">color</span><span class="pun">:</span> <span class="val">#fff</span><span class="pun">;</span>
+
+  <span class="cm">/* O verso começa já girado 180° (escondido) */</span>
+  <span class="prop">transform</span><span class="pun">:</span> <span class="fn">rotateY</span><span class="pun">(</span><span class="num">180deg</span><span class="pun">);</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">💡 O verso <strong>já nasce girado 180°</strong>. Quando o pai gira mais 180°, os dois se cancelam e o verso aparece normal.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: JavaScript
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-js">
+      <h2>🟡 JavaScript — Lógica e Interação</h2>
+      <p class="subtitle">JavaScript controla o comportamento: virar, navegar, salvar dados no navegador.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-js">
+            <div class="mc-inner">
+              <div class="mc-face mc-front"><div class="mc-label">Frente</div><div class="mc-text">typeof null</div></div>
+              <div class="mc-face mc-back"> <div class="mc-label">Resposta</div><div class="mc-text">"object" 😅</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Função de virar o cartão</strong>
+          <p>Adiciona ou remove a classe CSS <code>virado</code> no elemento — o CSS cuida da animação.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>script.js — virar</span><button class="copy-btn" data-copy="js-s1">Copiar</button></div>
+            <pre id="js-s1"><span class="cm">// Seleciona o elemento interno do cartão</span>
+<span class="kw">const</span> <span class="prop">cartao</span> <span class="pun">=</span> document<span class="pun">.</span><span class="fn">querySelector</span><span class="pun">(</span><span class="str">'.cartao-interno'</span><span class="pun">);</span>
+
+<span class="kw">function</span> <span class="fn">virar</span><span class="pun">() {</span>
+  <span class="cm">// toggle adiciona a classe se não existe, remove se existir</span>
+  cartao<span class="pun">.</span>classList<span class="pun">.</span><span class="fn">toggle</span><span class="pun">(</span><span class="str">'virado'</span><span class="pun">);</span>
+<span class="pun">}</span>
+
+<span class="cm">// Chama ao clicar no cartão</span>
+cartao<span class="pun">.</span><span class="fn">addEventListener</span><span class="pun">(</span><span class="str">'click'</span><span class="pun">,</span> virar<span class="pun">);</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Salvar e carregar baralhos (localStorage)</strong>
+          <p><code>localStorage</code> persiste dados no navegador sem servidor. Os dados sobrevivem ao fechar a aba.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>script.js — persistência</span><button class="copy-btn" data-copy="js-s2">Copiar</button></div>
+            <pre id="js-s2"><span class="cm">// ── SALVAR ──────────────────────────────────────</span>
+<span class="kw">function</span> <span class="fn">salvarBaralho</span><span class="pun">(</span>baralho<span class="pun">) {</span>
+  <span class="cm">// JSON.stringify converte objeto → string</span>
+  localStorage<span class="pun">.</span><span class="fn">setItem</span><span class="pun">(</span><span class="str">'meu_baralho'</span><span class="pun">,</span> JSON<span class="pun">.</span><span class="fn">stringify</span><span class="pun">(</span>baralho<span class="pun">));</span>
+<span class="pun">}</span>
+
+<span class="cm">// ── CARREGAR ─────────────────────────────────────</span>
+<span class="kw">function</span> <span class="fn">carregarBaralho</span><span class="pun">() {</span>
+  <span class="kw">const</span> <span class="prop">raw</span> <span class="pun">=</span> localStorage<span class="pun">.</span><span class="fn">getItem</span><span class="pun">(</span><span class="str">'meu_baralho'</span><span class="pun">);</span>
+
+  <span class="cm">// Se não existir, retorna array vazio</span>
+  <span class="kw">return</span> raw <span class="pun">?</span> JSON<span class="pun">.</span><span class="fn">parse</span><span class="pun">(</span>raw<span class="pun">) :</span> <span class="pun">[];</span>
+<span class="pun">}</span>
+
+<span class="cm">// ── USO ──────────────────────────────────────────</span>
+<span class="kw">const</span> <span class="prop">cartoes</span> <span class="pun">=</span> <span class="fn">carregarBaralho</span><span class="pun">();</span>
+cartoes<span class="pun">.</span><span class="fn">push</span><span class="pun">({</span> <span class="prop">frente</span><span class="pun">:</span> <span class="str">'Pergunta'</span><span class="pun">,</span> <span class="prop">verso</span><span class="pun">:</span> <span class="str">'Resposta'</span> <span class="pun">});</span>
+<span class="fn">salvarBaralho</span><span class="pun">(</span>cartoes<span class="pun">);</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Embaralhar os cartões</strong>
+          <p>O algoritmo Fisher-Yates é o padrão para embaralhar arrays de forma uniforme.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>script.js — shuffle</span><button class="copy-btn" data-copy="js-s3">Copiar</button></div>
+            <pre id="js-s3"><span class="kw">function</span> <span class="fn">embaralhar</span><span class="pun">(</span>arr<span class="pun">) {</span>
+  <span class="cm">// Cria cópia para não alterar o original</span>
+  <span class="kw">const</span> <span class="prop">copia</span> <span class="pun">=</span> <span class="pun">[...</span>arr<span class="pun">];</span>
+
+  <span class="cm">// Algoritmo Fisher-Yates</span>
+  <span class="kw">for</span> <span class="pun">(</span><span class="kw">let</span> <span class="prop">i</span> <span class="pun">=</span> copia<span class="pun">.</span>length <span class="pun">-</span> <span class="num">1</span><span class="pun">;</span> i <span class="pun">&gt;</span> <span class="num">0</span><span class="pun">;</span> i<span class="pun">--) {</span>
+    <span class="cm">// Índice aleatório entre 0 e i</span>
+    <span class="kw">const</span> <span class="prop">j</span> <span class="pun">=</span> Math<span class="pun">.</span><span class="fn">floor</span><span class="pun">(</span>Math<span class="pun">.</span><span class="fn">random</span><span class="pun">() * (</span>i <span class="pun">+</span> <span class="num">1</span><span class="pun">));</span>
+
+    <span class="cm">// Troca as posições i e j</span>
+    <span class="pun">[</span>copia<span class="pun">[</span>i<span class="pun">],</span> copia<span class="pun">[</span>j<span class="pun">]] = [</span>copia<span class="pun">[</span>j<span class="pun">],</span> copia<span class="pun">[</span>i<span class="pun">]];</span>
+  <span class="pun">}</span>
+
+  <span class="kw">return</span> copia<span class="pun">;</span>
+<span class="pun">}</span>
+
+<span class="cm">// Uso:</span>
+<span class="kw">const</span> <span class="prop">embaralhados</span> <span class="pun">=</span> <span class="fn">embaralhar</span><span class="pun">(</span>cartoes<span class="pun">);</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Python
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-py">
+      <h2>🐍 Python — Backend & CLI</h2>
+      <p class="subtitle">Python é ideal para criar a <strong>lógica de backend</strong> ou um app de terminal para estudar cartões.</p>
+
+      <div class="preview-box" style="flex-direction:column;gap:16px;">
+        <div style="background:#000;border-radius:8px;padding:16px 20px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;width:100%;max-width:420px;">
+          <span style="color:#3fb950">$</span> <span style="color:#e6edf3">python memorycards.py</span><br/><br/>
+          <span style="color:#7d8590">📚 Baralho: Capitais do Mundo (5 cartões)</span><br/><br/>
+          <span style="color:#58a6ff">━━━━━━━━━━━━━━━━━━━━━━━━━━</span><br/>
+          <span style="color:#e6edf3">🃏 Cartão 1/5</span><br/>
+          <span style="color:#ffa657">Pergunta: </span><span style="color:#fff">Capital do Brasil?</span><br/>
+          <span style="color:#7d8590">Pressione Enter para ver a resposta...</span><br/><br/>
+          <span style="color:#3fb950">✅ Resposta: Brasília</span><br/>
+          <span style="color:#7d8590">Acertou? (s/n): </span><span style="color:#fff">s</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Estrutura de dados com dataclass</strong>
+          <p>Use <code>@dataclass</code> para representar um cartão de forma limpa e tipada.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>memorycards.py — modelo</span><button class="copy-btn" data-copy="py-s1">Copiar</button></div>
+            <pre id="py-s1"><span class="kw">from</span> dataclasses <span class="kw">import</span> dataclass
+<span class="kw">from</span> typing     <span class="kw">import</span> List
+<span class="kw">import</span> random
+<span class="kw">import</span> json
+
+<span class="cm"># @dataclass cria __init__, __repr__ automaticamente</span>
+<span class="pun">@</span><span class="fn">dataclass</span>
+<span class="kw">class</span> <span class="fn">Cartao</span><span class="pun">:</span>
+    frente<span class="pun">:</span> <span class="prop">str</span>   <span class="cm"># pergunta</span>
+    verso<span class="pun">:</span>  <span class="prop">str</span>   <span class="cm"># resposta</span>
+    acertos<span class="pun">:</span> <span class="prop">int</span> <span class="pun">=</span> <span class="num">0</span>
+    erros<span class="pun">:</span>   <span class="prop">int</span> <span class="pun">=</span> <span class="num">0</span>
+
+<span class="pun">@</span><span class="fn">dataclass</span>
+<span class="kw">class</span> <span class="fn">Baralho</span><span class="pun">:</span>
+    nome<span class="pun">:</span>    <span class="prop">str</span>
+    cartoes<span class="pun">:</span> List<span class="pun">[</span>Cartao<span class="pun">]</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Sessão de estudo no terminal</strong>
+          <p>Loop pelos cartões, mostra a pergunta, aguarda Enter, mostra a resposta e registra acerto/erro.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>memorycards.py — sessão</span><button class="copy-btn" data-copy="py-s2">Copiar</button></div>
+            <pre id="py-s2"><span class="kw">def</span> <span class="fn">estudar</span><span class="pun">(</span>baralho<span class="pun">:</span> Baralho<span class="pun">)</span> <span class="pun">-&gt;</span> <span class="kw">None</span><span class="pun">:</span>
+    lista <span class="pun">=</span> baralho<span class="pun">.</span>cartoes<span class="pun">[:]</span>  <span class="cm"># cópia</span>
+    random<span class="pun">.</span><span class="fn">shuffle</span><span class="pun">(</span>lista<span class="pun">)</span>
+
+    <span class="fn">print</span><span class="pun">(</span><span class="str">f"📚 {baralho.nome} ({len(lista)} cartões)\n"</span><span class="pun">)</span>
+
+    acertos<span class="pun">,</span> erros <span class="pun">=</span> <span class="num">0</span><span class="pun">,</span> <span class="num">0</span>
+
+    <span class="kw">for</span> i<span class="pun">,</span> c <span class="kw">in</span> <span class="fn">enumerate</span><span class="pun">(</span>lista<span class="pun">,</span> <span class="num">1</span><span class="pun">):</span>
+        <span class="fn">print</span><span class="pun">(</span><span class="str">f"🃏 Cartão {i}/{len(lista)}"</span><span class="pun">)</span>
+        <span class="fn">print</span><span class="pun">(</span><span class="str">f"Pergunta: {c.frente}"</span><span class="pun">)</span>
+
+        <span class="cm"># Pausa até o usuário pressionar Enter</span>
+        <span class="fn">input</span><span class="pun">(</span><span class="str">"Pressione Enter para ver a resposta..."</span><span class="pun">)</span>
+        <span class="fn">print</span><span class="pun">(</span><span class="str">f"✅ Resposta: {c.verso}"</span><span class="pun">)</span>
+
+        resp <span class="pun">=</span> <span class="fn">input</span><span class="pun">(</span><span class="str">"Acertou? (s/n): "</span><span class="pun">).</span><span class="fn">strip</span><span class="pun">().</span><span class="fn">lower</span><span class="pun">()</span>
+
+        <span class="kw">if</span> resp <span class="pun">==</span> <span class="str">'s'</span><span class="pun">:</span>
+            acertos <span class="pun">+=</span> <span class="num">1</span><span class="pun">;</span> c<span class="pun">.</span>acertos <span class="pun">+=</span> <span class="num">1</span>
+        <span class="kw">else</span><span class="pun">:</span>
+            erros   <span class="pun">+=</span> <span class="num">1</span><span class="pun">;</span> c<span class="pun">.</span>erros   <span class="pun">+=</span> <span class="num">1</span>
+        <span class="fn">print</span><span class="pun">()</span>
+
+    pct <span class="pun">=</span> <span class="fn">round</span><span class="pun">(</span>acertos <span class="pun">/</span> <span class="fn">len</span><span class="pun">(</span>lista<span class="pun">) *</span> <span class="num">100</span><span class="pun">)</span>
+    <span class="fn">print</span><span class="pun">(</span><span class="str">f"🎉 Resultado: {acertos} acertos, {erros} erros ({pct}%)"</span><span class="pun">)</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Salvar e carregar em JSON</strong>
+          <p>Persista os baralhos num arquivo <code>.json</code> para não perder os dados.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>memorycards.py — JSON</span><button class="copy-btn" data-copy="py-s3">Copiar</button></div>
+            <pre id="py-s3"><span class="kw">def</span> <span class="fn">salvar</span><span class="pun">(</span>baralho<span class="pun">:</span> Baralho<span class="pun">,</span> arquivo<span class="pun">:</span> <span class="prop">str</span> <span class="pun">=</span> <span class="str">"baralho.json"</span><span class="pun">):</span>
+    <span class="kw">with</span> <span class="fn">open</span><span class="pun">(</span>arquivo<span class="pun">,</span> <span class="str">"w"</span><span class="pun">,</span> encoding<span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">)</span> <span class="kw">as</span> f<span class="pun">:</span>
+        <span class="cm"># dataclasses.asdict converte para dicionário</span>
+        <span class="kw">import</span> dataclasses
+        json<span class="pun">.</span><span class="fn">dump</span><span class="pun">(</span>dataclasses<span class="pun">.</span><span class="fn">asdict</span><span class="pun">(</span>baralho<span class="pun">),</span> f<span class="pun">,</span> ensure_ascii<span class="pun">=</span><span class="kw">False</span><span class="pun">,</span> indent<span class="pun">=</span><span class="num">2</span><span class="pun">)</span>
+
+<span class="kw">def</span> <span class="fn">carregar</span><span class="pun">(</span>arquivo<span class="pun">:</span> <span class="prop">str</span> <span class="pun">=</span> <span class="str">"baralho.json"</span><span class="pun">) -&gt;</span> Baralho<span class="pun">:</span>
+    <span class="kw">with</span> <span class="fn">open</span><span class="pun">(</span>arquivo<span class="pun">,</span> encoding<span class="pun">=</span><span class="str">"utf-8"</span><span class="pun">)</span> <span class="kw">as</span> f<span class="pun">:</span>
+        data <span class="pun">=</span> json<span class="pun">.</span><span class="fn">load</span><span class="pun">(</span>f<span class="pun">)</span>
+
+    <span class="cm"># Reconstrói os objetos a partir do dicionário</span>
+    cartoes <span class="pun">= [</span>Cartao<span class="pun">(**</span>c<span class="pun">)</span> <span class="kw">for</span> c <span class="kw">in</span> data<span class="pun">[</span><span class="str">'cartoes'</span><span class="pun">]]</span>
+    <span class="kw">return</span> Baralho<span class="pun">(</span>nome<span class="pun">=</span>data<span class="pun">[</span><span class="str">'nome'</span><span class="pun">],</span> cartoes<span class="pun">=</span>cartoes<span class="pun">)</span></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: React
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-react">
+      <h2>⚛️ React — Componente Reativo</h2>
+      <p class="subtitle">React usa componentes e estado para criar interfaces dinâmicas. O cartão se torna um componente reutilizável.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-react">
+            <div class="mc-inner">
+              <div class="mc-face mc-front"><div class="mc-label">Frente</div><div class="mc-text">O que é useState?</div></div>
+              <div class="mc-face mc-back"> <div class="mc-label">Resposta</div><div class="mc-text">Hook de estado no React</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Componente Cartao com useState</strong>
+          <p><code>useState(false)</code> cria a variável <code>virado</code>. Quando ela muda, o React re-renderiza automaticamente.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Cartao.jsx</span><button class="copy-btn" data-copy="react-s1">Copiar</button></div>
+            <pre id="react-s1"><span class="kw">import</span> <span class="pun">{</span> useState <span class="pun">}</span> <span class="kw">from</span> <span class="str">'react'</span><span class="pun">;</span>
+<span class="kw">import</span> <span class="str">'./Cartao.css'</span><span class="pun">;</span>
+
+<span class="cm">// Componente recebe frente e verso como props</span>
+<span class="kw">export function</span> <span class="fn">Cartao</span><span class="pun">({</span> frente<span class="pun">,</span> verso <span class="pun">}) {</span>
+
+  <span class="cm">// false = frente visível | true = verso visível</span>
+  <span class="kw">const</span> <span class="pun">[</span>virado<span class="pun">,</span> setVirado<span class="pun">] =</span> <span class="fn">useState</span><span class="pun">(</span><span class="kw">false</span><span class="pun">);</span>
+
+  <span class="kw">return</span> <span class="pun">(</span>
+    <span class="tag">&lt;div</span>
+      <span class="at">className</span><span class="pun">=</span><span class="pun">{</span><span class="str">`cartao-cena`</span><span class="pun">}</span>
+      <span class="at">onClick</span><span class="pun">=</span><span class="pun">{()</span> <span class="kw">=&gt;</span> <span class="fn">setVirado</span><span class="pun">(</span>v <span class="kw">=&gt;</span> <span class="pun">!</span>v<span class="pun">)}</span>
+    <span class="tag">&gt;</span>
+      <span class="tag">&lt;div</span> <span class="at">className</span><span class="pun">=</span><span class="pun">{</span><span class="str">`cartao-interno </span><span class="pun">${</span>virado <span class="pun">?</span> <span class="str">'virado'</span> <span class="pun">:</span> <span class="str">''</span><span class="pun">}</span><span class="str">`</span><span class="pun">}</span><span class="tag">&gt;</span>
+
+        <span class="tag">&lt;div</span> <span class="at">className</span><span class="pun">=</span><span class="str">"face frente"</span><span class="tag">&gt;</span>
+          <span class="tag">&lt;span</span> <span class="at">className</span><span class="pun">=</span><span class="str">"rotulo"</span><span class="tag">&gt;</span>Pergunta<span class="tag">&lt;/span&gt;</span>
+          <span class="tag">&lt;p&gt;</span><span class="pun">{</span>frente<span class="pun">}</span><span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+
+        <span class="tag">&lt;div</span> <span class="at">className</span><span class="pun">=</span><span class="str">"face verso"</span><span class="tag">&gt;</span>
+          <span class="tag">&lt;span</span> <span class="at">className</span><span class="pun">=</span><span class="str">"rotulo"</span><span class="tag">&gt;</span>Resposta<span class="tag">&lt;/span&gt;</span>
+          <span class="tag">&lt;p&gt;</span><span class="pun">{</span>verso<span class="pun">}</span><span class="tag">&lt;/p&gt;</span>
+        <span class="tag">&lt;/div&gt;</span>
+
+      <span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="pun">);</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Componente Sessao — navegação entre cartões</strong>
+          <p>Usa dois estados: o índice atual e se o cartão está virado. Ao avançar, reseta a virada.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Sessao.jsx</span><button class="copy-btn" data-copy="react-s2">Copiar</button></div>
+            <pre id="react-s2"><span class="kw">import</span> <span class="pun">{</span> useState <span class="pun">}</span> <span class="kw">from</span> <span class="str">'react'</span><span class="pun">;</span>
+<span class="kw">import</span> <span class="pun">{</span> Cartao <span class="pun">}</span> <span class="kw">from</span> <span class="str">'./Cartao'</span><span class="pun">;</span>
+
+<span class="kw">export function</span> <span class="fn">Sessao</span><span class="pun">({</span> cartoes <span class="pun">}) {</span>
+  <span class="kw">const</span> <span class="pun">[</span>idx<span class="pun">,</span>    setIdx<span class="pun">]    =</span> <span class="fn">useState</span><span class="pun">(</span><span class="num">0</span><span class="pun">);</span>
+  <span class="kw">const</span> <span class="pun">[</span>acertos<span class="pun">,</span> setAcertos<span class="pun">] =</span> <span class="fn">useState</span><span class="pun">(</span><span class="num">0</span><span class="pun">);</span>
+
+  <span class="kw">const</span> atual <span class="pun">=</span> cartoes<span class="pun">[</span>idx<span class="pun">];</span>
+  <span class="kw">const</span> fim   <span class="pun">=</span> idx <span class="pun">&gt;=</span> cartoes<span class="pun">.</span>length<span class="pun">;</span>
+
+  <span class="kw">function</span> <span class="fn">responder</span><span class="pun">(</span>acertou<span class="pun">) {</span>
+    <span class="kw">if</span> <span class="pun">(</span>acertou<span class="pun">)</span> <span class="fn">setAcertos</span><span class="pun">(</span>a <span class="kw">=&gt;</span> a <span class="pun">+</span> <span class="num">1</span><span class="pun">);</span>
+    <span class="fn">setIdx</span><span class="pun">(</span>i <span class="kw">=&gt;</span> i <span class="pun">+</span> <span class="num">1</span><span class="pun">);</span> <span class="cm">// avança para o próximo</span>
+  <span class="pun">}</span>
+
+  <span class="kw">if</span> <span class="pun">(</span>fim<span class="pun">)</span> <span class="kw">return</span> <span class="pun">(</span>
+    <span class="tag">&lt;div</span> <span class="at">className</span><span class="pun">=</span><span class="str">"resultado"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;h2&gt;</span>🎉 Fim da sessão!<span class="tag">&lt;/h2&gt;</span>
+      <span class="tag">&lt;p&gt;</span><span class="pun">{</span>acertos<span class="pun">}</span> / <span class="pun">{</span>cartoes<span class="pun">.</span>length<span class="pun">}</span> acertos<span class="tag">&lt;/p&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="pun">);</span>
+
+  <span class="kw">return</span> <span class="pun">(</span>
+    <span class="tag">&lt;div&gt;</span>
+      <span class="tag">&lt;p&gt;</span><span class="pun">{</span>idx <span class="pun">+</span> <span class="num">1</span><span class="pun">}</span> / <span class="pun">{</span>cartoes<span class="pun">.</span>length<span class="pun">}</span><span class="tag">&lt;/p&gt;</span>
+      <span class="tag">&lt;Cartao</span> <span class="at">frente</span><span class="pun">=</span><span class="pun">{</span>atual<span class="pun">.</span>frente<span class="pun">}</span> <span class="at">verso</span><span class="pun">=</span><span class="pun">{</span>atual<span class="pun">.</span>verso<span class="pun">}</span> <span class="tag">/&gt;</span>
+      <span class="tag">&lt;button</span> <span class="at">onClick</span><span class="pun">=</span><span class="pun">{()</span> <span class="kw">=&gt;</span> <span class="fn">responder</span><span class="pun">(</span><span class="kw">false</span><span class="pun">)}</span><span class="tag">&gt;</span>❌ Errei<span class="tag">&lt;/button&gt;</span>
+      <span class="tag">&lt;button</span> <span class="at">onClick</span><span class="pun">=</span><span class="pun">{()</span> <span class="kw">=&gt;</span> <span class="fn">responder</span><span class="pun">(</span><span class="kw">true</span><span class="pun">)}</span><span class="tag">&gt;</span>✅ Acertei<span class="tag">&lt;/button&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="pun">);</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="tip">💡 Em React, <strong>nunca modifique o estado diretamente</strong> (<code>virado = true</code> ✗). Sempre use o setter (<code>setVirado(true)</code> ✓) para que o React saiba re-renderizar.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: TypeScript
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-ts">
+      <h2>🔷 TypeScript — JavaScript com Tipos</h2>
+      <p class="subtitle">TypeScript é um superset do JavaScript que adiciona <strong>tipagem estática</strong>. Detecta erros antes de executar o código.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-ts">
+            <div class="mc-inner">
+              <div class="mc-face mc-front"><div class="mc-label">Frente</div><div class="mc-text">O que é TypeScript?</div></div>
+              <div class="mc-face mc-back"><div class="mc-label">Resposta</div><div class="mc-text">JS com tipos estáticos</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Tipando o modelo do Cartão</strong>
+          <p><code>interface</code> define o "contrato" de um objeto. O compilador avisa se você esquecer um campo ou usar o tipo errado.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>types.ts</span><button class="copy-btn" data-copy="ts-s1">Copiar</button></div>
+            <pre id="ts-s1"><span class="cm">// Interface define a forma exata do objeto</span>
+<span class="kw">interface</span> <span class="fn">Cartao</span> <span class="pun">{</span>
+  <span class="prop">id</span><span class="pun">:</span>     <span class="kw">string</span><span class="pun">;</span>
+  <span class="prop">frente</span><span class="pun">:</span> <span class="kw">string</span><span class="pun">;</span>
+  <span class="prop">verso</span><span class="pun">:</span>  <span class="kw">string</span><span class="pun">;</span>
+  <span class="prop">acertos</span><span class="pun">:</span> <span class="kw">number</span><span class="pun">;</span>
+  <span class="prop">erros</span><span class="pun">:</span>   <span class="kw">number</span><span class="pun">;</span>
+<span class="pun">}</span>
+
+<span class="kw">interface</span> <span class="fn">Baralho</span> <span class="pun">{</span>
+  <span class="prop">id</span><span class="pun">:</span>      <span class="kw">string</span><span class="pun">;</span>
+  <span class="prop">nome</span><span class="pun">:</span>    <span class="kw">string</span><span class="pun">;</span>
+  <span class="prop">descricao</span><span class="pun">?:</span> <span class="kw">string</span><span class="pun">;</span>   <span class="cm">// "?" = campo opcional</span>
+  <span class="prop">cartoes</span><span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">[];</span>
+<span class="pun">}</span>
+
+<span class="cm">// ✅ Correto — satisfaz a interface</span>
+<span class="kw">const</span> <span class="prop">card</span><span class="pun">:</span> <span class="fn">Cartao</span> <span class="pun">= {</span>
+  id<span class="pun">:</span> <span class="str">'abc'</span><span class="pun">,</span> frente<span class="pun">:</span> <span class="str">'Pergunta'</span><span class="pun">,</span> verso<span class="pun">:</span> <span class="str">'Resposta'</span><span class="pun">,</span>
+  acertos<span class="pun">:</span> <span class="num">0</span><span class="pun">,</span> erros<span class="pun">:</span> <span class="num">0</span>
+<span class="pun">};</span>
+
+<span class="cm">// ❌ Erro em tempo de compilação — "frente" está faltando</span>
+<span class="cm">// const errado: Cartao = { id: '1', verso: 'x', acertos: 0, erros: 0 };</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>Funções com tipos explícitos</strong>
+          <p>Declarar os tipos dos parâmetros e retorno documenta a função e previne bugs silenciosos.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>utils.ts</span><button class="copy-btn" data-copy="ts-s2">Copiar</button></div>
+            <pre id="ts-s2"><span class="cm">// Parâmetro: Cartao[] → Retorno: Cartao[]</span>
+<span class="kw">function</span> <span class="fn">embaralhar</span><span class="pun">(</span>arr<span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">[]):</span> <span class="fn">Cartao</span><span class="pun">[] {</span>
+  <span class="kw">return</span> <span class="pun">[...</span>arr<span class="pun">].</span><span class="fn">sort</span><span class="pun">(()</span> <span class="kw">=&gt;</span> Math<span class="pun">.</span><span class="fn">random</span><span class="pun">() -</span> <span class="num">0.5</span><span class="pun">);</span>
+<span class="pun">}</span>
+
+<span class="cm">// Tipo de retorno "void" = função não retorna nada</span>
+<span class="kw">function</span> <span class="fn">registrarAcerto</span><span class="pun">(</span>cartao<span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">):</span> <span class="kw">void</span> <span class="pun">{</span>
+  cartao<span class="pun">.</span>acertos<span class="pun">++;</span>
+<span class="pun">}</span>
+
+<span class="cm">// Tipo union: string OU null</span>
+<span class="kw">function</span> <span class="fn">buscarCartao</span><span class="pun">(</span>id<span class="pun">:</span> <span class="kw">string</span><span class="pun">,</span> lista<span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">[]):</span> <span class="fn">Cartao</span> <span class="pun">|</span> <span class="kw">null</span> <span class="pun">{</span>
+  <span class="kw">return</span> lista<span class="pun">.</span><span class="fn">find</span><span class="pun">(</span>c <span class="kw">=&gt;</span> c<span class="pun">.</span>id <span class="pun">===</span> id<span class="pun">)</span> <span class="pun">??</span> <span class="kw">null</span><span class="pun">;</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Enum para estados do cartão</strong>
+          <p><code>enum</code> cria um conjunto nomeado de constantes, tornando o código mais legível que números mágicos.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>estado.ts</span><button class="copy-btn" data-copy="ts-s3">Copiar</button></div>
+            <pre id="ts-s3"><span class="cm">// Enum define estados possíveis do cartão</span>
+<span class="kw">enum</span> <span class="fn">EstadoCartao</span> <span class="pun">{</span>
+  FRENTE   <span class="pun">=</span> <span class="str">'frente'</span><span class="pun">,</span>
+  VERSO    <span class="pun">=</span> <span class="str">'verso'</span><span class="pun">,</span>
+  ACERTADO <span class="pun">=</span> <span class="str">'acertado'</span><span class="pun">,</span>
+  ERRADO   <span class="pun">=</span> <span class="str">'errado'</span><span class="pun">,</span>
+<span class="pun">}</span>
+
+<span class="kw">interface</span> <span class="fn">SessaoEstudo</span> <span class="pun">{</span>
+  <span class="prop">cartaoAtual</span><span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">;</span>
+  <span class="prop">estado</span><span class="pun">:</span>      <span class="fn">EstadoCartao</span><span class="pun">;</span>   <span class="cm">// só aceita valores do enum</span>
+  <span class="prop">progresso</span><span class="pun">:</span>   <span class="kw">number</span><span class="pun">;</span>          <span class="cm">// 0–100</span>
+<span class="pun">}</span>
+
+<span class="kw">function</span> <span class="fn">virar</span><span class="pun">(</span>sessao<span class="pun">:</span> <span class="fn">SessaoEstudo</span><span class="pun">):</span> <span class="fn">SessaoEstudo</span> <span class="pun">{</span>
+  <span class="kw">return</span> <span class="pun">{</span>
+    <span class="pun">...</span>sessao<span class="pun">,</span>
+    estado<span class="pun">:</span> <span class="fn">EstadoCartao</span><span class="pun">.</span>VERSO
+  <span class="pun">};</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 TypeScript <strong>não roda no navegador diretamente</strong> — ele é compilado para JavaScript com <code>tsc</code> ou via bundlers como Vite e Webpack.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Vue.js
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-vue">
+      <h2>💚 Vue.js — Componente Reativo Simples</h2>
+      <p class="subtitle">Vue.js usa a Composition API com <code>ref()</code> e templates declarativos — mais simples que React para começar.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-vue">
+            <div class="mc-inner">
+              <div class="mc-face mc-front" style="background:linear-gradient(135deg,#1a6b3c,#42b883)"><div class="mc-label">Frente</div><div class="mc-text">O que é Vue.js?</div></div>
+              <div class="mc-face mc-back"  style="background:linear-gradient(135deg,#1a3a6b,#35495e)"><div class="mc-label">Resposta</div><div class="mc-text">Framework JS progressivo</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Single File Component (SFC)</strong>
+          <p>Um arquivo <code>.vue</code> reúne template, script e estilo em um só lugar — a essência do Vue.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Cartao.vue — estrutura</span><button class="copy-btn" data-copy="vue-s1">Copiar</button></div>
+            <pre id="vue-s1"><span class="cm">&lt;!-- TEMPLATE: HTML reativo --&gt;</span>
+<span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"cena"</span> <span class="at">@click</span>=<span class="val">"virar"</span><span class="tag">&gt;</span>
+    <span class="tag">&lt;div</span> <span class="pun">:class</span>=<span class="val">"['interno', { virado }]"</span><span class="tag">&gt;</span>
+      <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"face frente"</span><span class="tag">&gt;</span><span class="pun">{{ frente }}</span><span class="tag">&lt;/div&gt;</span>
+      <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"face verso"</span><span class="tag">&gt;</span><span class="pun">{{ verso }}</span><span class="tag">&lt;/div&gt;</span>
+    <span class="tag">&lt;/div&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/template&gt;</span>
+
+<span class="cm">&lt;!-- SCRIPT: lógica com Composition API --&gt;</span>
+<span class="tag">&lt;script</span> <span class="at">setup</span><span class="tag">&gt;</span>
+<span class="kw">import</span> <span class="pun">{</span> ref <span class="pun">}</span> <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="cm">// defineProps declara as props do componente</span>
+<span class="kw">const</span> <span class="prop">props</span> <span class="pun">=</span> <span class="fn">defineProps</span><span class="pun">({</span>
+  frente<span class="pun">:</span> <span class="fn">String</span><span class="pun">,</span>
+  verso<span class="pun">:</span>  <span class="fn">String</span>
+<span class="pun">})</span>
+
+<span class="cm">// ref() cria estado reativo</span>
+<span class="kw">const</span> <span class="prop">virado</span> <span class="pun">=</span> <span class="fn">ref</span><span class="pun">(</span><span class="kw">false</span><span class="pun">)</span>
+<span class="kw">const</span> <span class="fn">virar</span>  <span class="pun">=</span> <span class="pun">()</span> <span class="kw">=&gt;</span> <span class="pun">{</span> virado<span class="pun">.</span>value <span class="pun">=</span> <span class="pun">!</span>virado<span class="pun">.</span>value <span class="pun">}</span>
+<span class="tag">&lt;/script&gt;</span>
+
+<span class="cm">&lt;!-- STYLE: scoped = CSS só deste componente --&gt;</span>
+<span class="tag">&lt;style</span> <span class="at">scoped</span><span class="tag">&gt;</span>
+<span class="sel">.cena</span> <span class="pun">{</span> <span class="prop">perspective</span><span class="pun">:</span> <span class="num">800px</span><span class="pun">;</span> <span class="prop">cursor</span><span class="pun">:</span> <span class="kw">pointer</span><span class="pun">; }</span>
+<span class="sel">.interno.virado</span> <span class="pun">{</span> <span class="prop">transform</span><span class="pun">:</span> <span class="fn">rotateY</span><span class="pun">(</span><span class="num">180deg</span><span class="pun">); }</span>
+<span class="tag">&lt;/style&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>v-for: renderizando lista de cartões</strong>
+          <p>A diretiva <code>v-for</code> itera sobre um array e cria um elemento para cada item — sem escrever loops manualmente.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>ListaCartoes.vue</span><button class="copy-btn" data-copy="vue-s2">Copiar</button></div>
+            <pre id="vue-s2"><span class="tag">&lt;template&gt;</span>
+  <span class="tag">&lt;div</span> <span class="at">class</span>=<span class="val">"lista"</span><span class="tag">&gt;</span>
+    <span class="cm">&lt;!-- v-for itera; :key garante diff eficiente --&gt;</span>
+    <span class="tag">&lt;Cartao</span>
+      <span class="at">v-for</span>=<span class="val">"card in cartoes"</span>
+      <span class="pun">:key</span>=<span class="val">"card.id"</span>
+      <span class="pun">:frente</span>=<span class="val">"card.frente"</span>
+      <span class="pun">:verso</span>=<span class="val">"card.verso"</span>
+    <span class="tag">/&gt;</span>
+  <span class="tag">&lt;/div&gt;</span>
+<span class="tag">&lt;/template&gt;</span>
+
+<span class="tag">&lt;script</span> <span class="at">setup</span><span class="tag">&gt;</span>
+<span class="kw">import</span> <span class="pun">{</span> reactive <span class="pun">}</span> <span class="kw">from</span> <span class="str">'vue'</span>
+<span class="kw">import</span> Cartao <span class="kw">from</span> <span class="str">'./Cartao.vue'</span>
+
+<span class="cm">// reactive() torna um objeto inteiro reativo</span>
+<span class="kw">const</span> <span class="prop">cartoes</span> <span class="pun">=</span> <span class="fn">reactive</span><span class="pun">([</span>
+  <span class="pun">{</span> id<span class="pun">:</span> <span class="str">'1'</span><span class="pun">,</span> frente<span class="pun">:</span> <span class="str">'Capital do Brasil'</span><span class="pun">,</span> verso<span class="pun">:</span> <span class="str">'Brasília'</span> <span class="pun">},</span>
+  <span class="pun">{</span> id<span class="pun">:</span> <span class="str">'2'</span><span class="pun">,</span> frente<span class="pun">:</span> <span class="str">'Capital da França'</span><span class="pun">,</span>  verso<span class="pun">:</span> <span class="str">'Paris'</span>    <span class="pun">},</span>
+<span class="pun">])</span>
+<span class="tag">&lt;/script&gt;</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Computed e Watch — reagindo a mudanças</strong>
+          <p><code>computed</code> deriva um valor do estado. <code>watch</code> executa código quando um valor muda — útil para salvar automaticamente.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Sessao.vue — script</span><button class="copy-btn" data-copy="vue-s3">Copiar</button></div>
+            <pre id="vue-s3"><span class="kw">import</span> <span class="pun">{</span> ref<span class="pun">,</span> computed<span class="pun">,</span> watch <span class="pun">}</span> <span class="kw">from</span> <span class="str">'vue'</span>
+
+<span class="kw">const</span> <span class="prop">acertos</span> <span class="pun">=</span> <span class="fn">ref</span><span class="pun">(</span><span class="num">0</span><span class="pun">)</span>
+<span class="kw">const</span> <span class="prop">total</span>   <span class="pun">=</span> <span class="fn">ref</span><span class="pun">(</span><span class="num">10</span><span class="pun">)</span>
+
+<span class="cm">// computed: recalculado automaticamente quando acertos/total mudam</span>
+<span class="kw">const</span> <span class="prop">percentual</span> <span class="pun">=</span> <span class="fn">computed</span><span class="pun">(()</span> <span class="kw">=&gt;</span>
+  total<span class="pun">.</span>value <span class="pun">?</span> <span class="fn">Math</span><span class="pun">.</span><span class="fn">round</span><span class="pun">(</span>acertos<span class="pun">.</span>value <span class="pun">/</span> total<span class="pun">.</span>value <span class="pun">*</span> <span class="num">100</span><span class="pun">)</span> <span class="pun">+</span> <span class="str">'%'</span> <span class="pun">:</span> <span class="str">'—'</span>
+<span class="pun">)</span>
+
+<span class="cm">// watch: executa quando "acertos" mudar</span>
+<span class="fn">watch</span><span class="pun">(</span>acertos<span class="pun">, (</span>novoValor<span class="pun">) =&gt; {</span>
+  <span class="cm">// Salva no localStorage a cada acerto</span>
+  localStorage<span class="pun">.</span><span class="fn">setItem</span><span class="pun">(</span><span class="str">'acertos'</span><span class="pun">,</span> <span class="fn">String</span><span class="pun">(</span>novoValor<span class="pun">))</span>
+<span class="pun">})</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 Vue vs React: Vue usa <strong>templates HTML</strong> (mais familiar) enquanto React usa <strong>JSX</strong> (JS dentro do JS). Ambos são excelentes — é questão de preferência.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: SQL
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-sql">
+      <h2>🟠 SQL — Banco de Dados dos Cartões</h2>
+      <p class="subtitle">SQL (Structured Query Language) gerencia os dados do app num banco relacional como PostgreSQL, MySQL ou SQLite.</p>
+
+      <div class="preview-box" style="flex-direction:column;gap:12px;">
+        <div style="background:#000;border-radius:8px;padding:14px 18px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;width:100%;max-width:460px;">
+          <span style="color:#7d8590">sqlite&gt;</span> <span style="color:#e6edf3">SELECT frente, verso FROM cartoes WHERE baralho_id = 1;</span><br/><br/>
+          <span style="color:#7d8590">┌──────────────────────┬──────────────┐</span><br/>
+          <span style="color:#7d8590">│ frente               │ verso        │</span><br/>
+          <span style="color:#7d8590">├──────────────────────┼──────────────┤</span><br/>
+          <span style="color:#e6edf3">│ Capital do Brasil    │ Brasília     │</span><br/>
+          <span style="color:#e6edf3">│ Capital da França    │ Paris        │</span><br/>
+          <span style="color:#7d8590">└──────────────────────┴──────────────┘</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Criando as tabelas (DDL)</strong>
+          <p><code>CREATE TABLE</code> define a estrutura. Use <code>FOREIGN KEY</code> para vincular cartões ao seu baralho.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>schema.sql</span><button class="copy-btn" data-copy="sql-s1">Copiar</button></div>
+            <pre id="sql-s1"><span class="cm">-- Tabela de baralhos</span>
+<span class="kw">CREATE TABLE</span> <span class="fn">baralhos</span> <span class="pun">(</span>
+  <span class="prop">id</span>         <span class="kw">INTEGER</span>  <span class="kw">PRIMARY KEY AUTOINCREMENT</span><span class="pun">,</span>
+  <span class="prop">nome</span>       <span class="kw">TEXT</span>     <span class="kw">NOT NULL</span><span class="pun">,</span>
+  <span class="prop">descricao</span>  <span class="kw">TEXT</span><span class="pun">,</span>
+  <span class="prop">criado_em</span>  <span class="kw">DATETIME</span> <span class="kw">DEFAULT</span> <span class="fn">CURRENT_TIMESTAMP</span>
+<span class="pun">);</span>
+
+<span class="cm">-- Tabela de cartões (1 baralho → N cartões)</span>
+<span class="kw">CREATE TABLE</span> <span class="fn">cartoes</span> <span class="pun">(</span>
+  <span class="prop">id</span>          <span class="kw">INTEGER</span> <span class="kw">PRIMARY KEY AUTOINCREMENT</span><span class="pun">,</span>
+  <span class="prop">baralho_id</span>  <span class="kw">INTEGER</span> <span class="kw">NOT NULL</span><span class="pun">,</span>
+  <span class="prop">frente</span>      <span class="kw">TEXT</span>    <span class="kw">NOT NULL</span><span class="pun">,</span>
+  <span class="prop">verso</span>       <span class="kw">TEXT</span>    <span class="kw">NOT NULL</span><span class="pun">,</span>
+  <span class="prop">acertos</span>     <span class="kw">INTEGER</span> <span class="kw">DEFAULT</span> <span class="num">0</span><span class="pun">,</span>
+  <span class="prop">erros</span>       <span class="kw">INTEGER</span> <span class="kw">DEFAULT</span> <span class="num">0</span><span class="pun">,</span>
+
+  <span class="cm">-- Chave estrangeira: se o baralho for deletado, cartões também são</span>
+  <span class="kw">FOREIGN KEY</span> <span class="pun">(</span>baralho_id<span class="pun">)</span> <span class="kw">REFERENCES</span> <span class="fn">baralhos</span><span class="pun">(</span>id<span class="pun">)</span>
+    <span class="kw">ON DELETE CASCADE</span>
+<span class="pun">);</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>CRUD — Inserir, Ler, Atualizar, Deletar</strong>
+          <p>As quatro operações fundamentais de qualquer banco de dados.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>queries.sql</span><button class="copy-btn" data-copy="sql-s2">Copiar</button></div>
+            <pre id="sql-s2"><span class="cm">-- CREATE: inserir novo cartão</span>
+<span class="kw">INSERT INTO</span> <span class="fn">cartoes</span> <span class="pun">(</span>baralho_id<span class="pun">,</span> frente<span class="pun">,</span> verso<span class="pun">)</span>
+<span class="kw">VALUES</span> <span class="pun">(</span><span class="num">1</span><span class="pun">,</span> <span class="str">'Capital do Brasil'</span><span class="pun">,</span> <span class="str">'Brasília'</span><span class="pun">);</span>
+
+<span class="cm">-- READ: buscar todos os cartões de um baralho</span>
+<span class="kw">SELECT</span> <span class="pun">*</span> <span class="kw">FROM</span> <span class="fn">cartoes</span>
+<span class="kw">WHERE</span> baralho_id <span class="pun">=</span> <span class="num">1</span>
+<span class="kw">ORDER BY RANDOM()</span><span class="pun">;</span>    <span class="cm">-- embaralha no próprio banco!</span>
+
+<span class="cm">-- UPDATE: registrar acerto</span>
+<span class="kw">UPDATE</span> <span class="fn">cartoes</span>
+<span class="kw">SET</span>    acertos <span class="pun">=</span> acertos <span class="pun">+</span> <span class="num">1</span>
+<span class="kw">WHERE</span>  id <span class="pun">=</span> <span class="num">42</span><span class="pun">;</span>
+
+<span class="cm">-- DELETE: remover um cartão</span>
+<span class="kw">DELETE FROM</span> <span class="fn">cartoes</span> <span class="kw">WHERE</span> id <span class="pun">=</span> <span class="num">42</span><span class="pun">;</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>JOIN e estatísticas de desempenho</strong>
+          <p><code>JOIN</code> combina tabelas. Aqui calculamos o aproveitamento de cada baralho.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>relatorio.sql</span><button class="copy-btn" data-copy="sql-s3">Copiar</button></div>
+            <pre id="sql-s3"><span class="cm">-- Aproveitamento por baralho (acertos / total tentativas)</span>
+<span class="kw">SELECT</span>
+  b<span class="pun">.</span>nome                              <span class="kw">AS</span> baralho<span class="pun">,</span>
+  <span class="fn">COUNT</span><span class="pun">(</span>c<span class="pun">.</span>id<span class="pun">)</span>                          <span class="kw">AS</span> total_cartoes<span class="pun">,</span>
+  <span class="fn">SUM</span><span class="pun">(</span>c<span class="pun">.</span>acertos<span class="pun">)</span>                      <span class="kw">AS</span> acertos<span class="pun">,</span>
+  <span class="fn">ROUND</span><span class="pun">(</span>
+    <span class="fn">SUM</span><span class="pun">(</span>c<span class="pun">.</span>acertos<span class="pun">) *</span> <span class="num">100.0</span> <span class="pun">/</span>
+    <span class="fn">NULLIF</span><span class="pun">(</span><span class="fn">SUM</span><span class="pun">(</span>c<span class="pun">.</span>acertos <span class="pun">+</span> c<span class="pun">.</span>erros<span class="pun">),</span> <span class="num">0</span><span class="pun">),</span>
+    <span class="num">1</span>
+  <span class="pun">)</span>                                   <span class="kw">AS</span> aproveitamento_pct
+
+<span class="kw">FROM</span>       <span class="fn">baralhos</span> b
+<span class="kw">INNER JOIN</span> <span class="fn">cartoes</span>  c <span class="kw">ON</span> c<span class="pun">.</span>baralho_id <span class="pun">=</span> b<span class="pun">.</span>id
+
+<span class="kw">GROUP BY</span> b<span class="pun">.</span>id
+<span class="kw">ORDER BY</span> aproveitamento_pct <span class="kw">DESC</span><span class="pun">;</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 Para apps pequenos use <strong>SQLite</strong> (arquivo local, sem servidor). Para produção com múltiplos usuários, use <strong>PostgreSQL</strong> ou <strong>MySQL</strong>.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Go
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-go">
+      <h2>🩵 Go — Backend de Alta Performance</h2>
+      <p class="subtitle">Go (Golang) é compilado, tipado e concorrente. Excelente para APIs REST rápidas que servem o app de cartões.</p>
+
+      <div class="preview-box" style="flex-direction:column;gap:12px;">
+        <div style="background:#000;border-radius:8px;padding:14px 18px;font-family:'SF Mono','Fira Code',monospace;font-size:13px;width:100%;max-width:460px;">
+          <span style="color:#3fb950">$</span> <span style="color:#e6edf3">go run main.go</span><br/>
+          <span style="color:#7d8590">Servidor rodando em http://localhost:8080</span><br/><br/>
+          <span style="color:#3fb950">$</span> <span style="color:#e6edf3">curl localhost:8080/baralhos</span><br/>
+          <span style="color:#ffa657">[{"id":1,"nome":"Capitais","total":5}]</span>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Structs — o modelo de dados em Go</strong>
+          <p>Em Go não há classes — usamos <code>struct</code>. A tag <code>json:"..."</code> controla como o campo aparece no JSON da API.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>models.go</span><button class="copy-btn" data-copy="go-s1">Copiar</button></div>
+            <pre id="go-s1"><span class="kw">package</span> main
+
+<span class="cm">// Struct define a estrutura do cartão</span>
+<span class="kw">type</span> <span class="fn">Cartao</span> <span class="kw">struct</span> <span class="pun">{</span>
+  ID      <span class="kw">int</span>    <span class="str">`json:"id"`</span>
+  Frente  <span class="kw">string</span> <span class="str">`json:"frente"`</span>
+  Verso   <span class="kw">string</span> <span class="str">`json:"verso"`</span>
+  Acertos <span class="kw">int</span>    <span class="str">`json:"acertos"`</span>
+  Erros   <span class="kw">int</span>    <span class="str">`json:"erros"`</span>
+<span class="pun">}</span>
+
+<span class="kw">type</span> <span class="fn">Baralho</span> <span class="kw">struct</span> <span class="pun">{</span>
+  ID      <span class="kw">int</span>      <span class="str">`json:"id"`</span>
+  Nome    <span class="kw">string</span>   <span class="str">`json:"nome"`</span>
+  Cartoes <span class="pun">[]</span>Cartao <span class="str">`json:"cartoes"`</span>
+<span class="pun">}</span>
+
+<span class="cm">// Método da struct: retorna aproveitamento</span>
+<span class="kw">func</span> <span class="pun">(</span>b <span class="fn">Baralho</span><span class="pun">)</span> <span class="fn">Aproveitamento</span><span class="pun">()</span> <span class="kw">float64</span> <span class="pun">{</span>
+  total<span class="pun">,</span> acertos <span class="pun">:=</span> <span class="num">0</span><span class="pun">,</span> <span class="num">0</span>
+  <span class="kw">for</span> <span class="pun">_,</span> c <span class="pun">:=</span> <span class="kw">range</span> b<span class="pun">.</span>Cartoes <span class="pun">{</span>
+    total   <span class="pun">+=</span> c<span class="pun">.</span>Acertos <span class="pun">+</span> c<span class="pun">.</span>Erros
+    acertos <span class="pun">+=</span> c<span class="pun">.</span>Acertos
+  <span class="pun">}</span>
+  <span class="kw">if</span> total <span class="pun">==</span> <span class="num">0</span> <span class="pun">{</span> <span class="kw">return</span> <span class="num">0</span> <span class="pun">}</span>
+  <span class="kw">return</span> <span class="kw">float64</span><span class="pun">(</span>acertos<span class="pun">) /</span> <span class="kw">float64</span><span class="pun">(</span>total<span class="pun">) *</span> <span class="num">100</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>API REST com net/http (sem framework)</strong>
+          <p>Go tem HTTP nativo na stdlib. <code>http.HandleFunc</code> registra rotas, e <code>json.NewEncoder</code> serializa a resposta.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>main.go — servidor</span><button class="copy-btn" data-copy="go-s2">Copiar</button></div>
+            <pre id="go-s2"><span class="kw">package</span> main
+
+<span class="kw">import</span> <span class="pun">(</span>
+  <span class="str">"encoding/json"</span>
+  <span class="str">"net/http"</span>
+<span class="pun">)</span>
+
+<span class="cm">// Slice de baralhos (em produção viria do banco)</span>
+<span class="kw">var</span> baralhos <span class="pun">= []</span>Baralho<span class="pun">{}</span>
+
+<span class="kw">func</span> <span class="fn">listarBaralhos</span><span class="pun">(</span>w http<span class="pun">.</span>ResponseWriter<span class="pun">,</span> r <span class="pun">*</span>http<span class="pun">.</span>Request<span class="pun">) {</span>
+  <span class="cm">// Define o Content-Type da resposta</span>
+  w<span class="pun">.</span><span class="fn">Header</span><span class="pun">().</span><span class="fn">Set</span><span class="pun">(</span><span class="str">"Content-Type"</span><span class="pun">,</span> <span class="str">"application/json"</span><span class="pun">)</span>
+
+  <span class="cm">// Codifica o slice de baralhos como JSON e escreve na resposta</span>
+  json<span class="pun">.</span><span class="fn">NewEncoder</span><span class="pun">(</span>w<span class="pun">).</span><span class="fn">Encode</span><span class="pun">(</span>baralhos<span class="pun">)</span>
+<span class="pun">}</span>
+
+<span class="kw">func</span> <span class="fn">main</span><span class="pun">() {</span>
+  <span class="cm">// Registra a rota GET /baralhos</span>
+  http<span class="pun">.</span><span class="fn">HandleFunc</span><span class="pun">(</span><span class="str">"/baralhos"</span><span class="pun">,</span> listarBaralhos<span class="pun">)</span>
+
+  <span class="cm">// Inicia o servidor na porta 8080</span>
+  http<span class="pun">.</span><span class="fn">ListenAndServe</span><span class="pun">(</span><span class="str">":8080"</span><span class="pun">,</span> <span class="kw">nil</span><span class="pun">)</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Goroutines — concorrência simples</strong>
+          <p>Com <code>go func()</code> você executa tarefas em paralelo (ex: notificações de revisão) sem complexidade.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>notificador.go</span><button class="copy-btn" data-copy="go-s3">Copiar</button></div>
+            <pre id="go-s3"><span class="kw">import</span> <span class="pun">(</span> <span class="str">"fmt"</span><span class="pun">;</span> <span class="str">"time"</span> <span class="pun">)</span>
+
+<span class="cm">// Envia lembrete de revisão a cada 24h</span>
+<span class="kw">func</span> <span class="fn">iniciarLembrete</span><span class="pun">(</span>usuario <span class="kw">string</span><span class="pun">) {</span>
+  <span class="cm">// "go" inicia uma goroutine (thread leve)</span>
+  <span class="kw">go func</span><span class="pun">() {</span>
+    <span class="kw">for</span> <span class="pun">{</span>
+      time<span class="pun">.</span><span class="fn">Sleep</span><span class="pun">(</span><span class="num">24</span> <span class="pun">*</span> time<span class="pun">.</span>Hour<span class="pun">)</span>
+      fmt<span class="pun">.</span><span class="fn">Printf</span><span class="pun">(</span><span class="str">"⏰ %s, hora de revisar seus cartões!\n"</span><span class="pun">,</span> usuario<span class="pun">)</span>
+    <span class="pun">}</span>
+  <span class="pun">}()</span>
+<span class="pun">}</span>
+
+<span class="cm">// O servidor principal não é bloqueado pela goroutine acima</span>
+<span class="kw">func</span> <span class="fn">main</span><span class="pun">() {</span>
+  <span class="fn">iniciarLembrete</span><span class="pun">(</span><span class="str">"Maria"</span><span class="pun">)</span>
+  <span class="fn">iniciarLembrete</span><span class="pun">(</span><span class="str">"João"</span><span class="pun">)</span>
+  <span class="cm">// ... servidor continua rodando normalmente</span>
+  http<span class="pun">.</span><span class="fn">ListenAndServe</span><span class="pun">(</span><span class="str">":8080"</span><span class="pun">,</span> <span class="kw">nil</span><span class="pun">)</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 Go compila para um <strong>binário único</strong> sem dependências externas — fácil de fazer deploy em qualquer servidor.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Kotlin
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-kotlin">
+      <h2>💜 Kotlin — App Android de Cartões</h2>
+      <p class="subtitle">Kotlin é a linguagem oficial do Android. Concisa, segura contra null e totalmente interoperável com Java.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-kotlin">
+            <div class="mc-inner">
+              <div class="mc-face mc-front" style="background:linear-gradient(135deg,#4a1a8f,#7f52ff)"><div class="mc-label">Frente</div><div class="mc-text">O que é Kotlin?</div></div>
+              <div class="mc-face mc-back"  style="background:linear-gradient(135deg,#1a3a6b,#2563b0)"><div class="mc-label">Resposta</div><div class="mc-text">Linguagem Android oficial</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Data class — modelo limpo e imutável</strong>
+          <p><code>data class</code> gera automaticamente <code>equals</code>, <code>hashCode</code>, <code>copy</code> e <code>toString</code>. Um cartão em uma linha.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Cartao.kt</span><button class="copy-btn" data-copy="kotlin-s1">Copiar</button></div>
+            <pre id="kotlin-s1"><span class="cm">// data class gera equals/hashCode/copy automaticamente</span>
+<span class="kw">data class</span> <span class="fn">Cartao</span><span class="pun">(</span>
+    <span class="kw">val</span> <span class="prop">id</span><span class="pun">:</span>      <span class="kw">String</span><span class="pun">,</span>
+    <span class="kw">val</span> <span class="prop">frente</span><span class="pun">:</span>  <span class="kw">String</span><span class="pun">,</span>
+    <span class="kw">val</span> <span class="prop">verso</span><span class="pun">:</span>   <span class="kw">String</span><span class="pun">,</span>
+    <span class="kw">val</span> <span class="prop">acertos</span><span class="pun">:</span> <span class="kw">Int</span> <span class="pun">=</span> <span class="num">0</span><span class="pun">,</span>    <span class="cm">// valor padrão</span>
+    <span class="kw">val</span> <span class="prop">erros</span><span class="pun">:</span>   <span class="kw">Int</span> <span class="pun">=</span> <span class="num">0</span>
+<span class="pun">)</span>
+
+<span class="cm">// copy() cria nova instância alterando só campos escolhidos</span>
+<span class="kw">val</span> <span class="prop">original</span> <span class="pun">=</span> <span class="fn">Cartao</span><span class="pun">(</span><span class="str">"1"</span><span class="pun">,</span> <span class="str">"HTML?"</span><span class="pun">,</span> <span class="str">"Markup Language"</span><span class="pun">)</span>
+<span class="kw">val</span> <span class="prop">acertou</span>  <span class="pun">=</span> original<span class="pun">.</span><span class="fn">copy</span><span class="pun">(</span>acertos <span class="pun">=</span> original<span class="pun">.</span>acertos <span class="pun">+</span> <span class="num">1</span><span class="pun">)</span>
+
+<span class="cm">// Null safety: "?" = pode ser null, "!!" = lança erro se null</span>
+<span class="kw">var</span> <span class="prop">cartaoAtual</span><span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">?</span> <span class="pun">=</span> <span class="kw">null</span>
+<span class="kw">val</span> <span class="prop">frente</span> <span class="pun">=</span> cartaoAtual<span class="pun">?.</span>frente <span class="pun">?:</span> <span class="str">"Nenhum cartão selecionado"</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>ViewModel + StateFlow (Android Jetpack)</strong>
+          <p><code>ViewModel</code> guarda o estado da UI sobrevivendo à rotação do celular. <code>StateFlow</code> emite atualizações reativamente.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>CartaoViewModel.kt</span><button class="copy-btn" data-copy="kotlin-s2">Copiar</button></div>
+            <pre id="kotlin-s2"><span class="kw">import</span> androidx<span class="pun">.</span>lifecycle<span class="pun">.</span>ViewModel
+<span class="kw">import</span> kotlinx<span class="pun">.</span>coroutines<span class="pun">.</span>flow<span class="pun">.</span><span class="pun">*</span>
+
+<span class="kw">class</span> <span class="fn">CartaoViewModel</span><span class="pun">:</span> <span class="fn">ViewModel</span><span class="pun">() {</span>
+
+  <span class="cm">// MutableStateFlow: estado interno (privado)</span>
+  <span class="kw">private val</span> <span class="prop">_virado</span> <span class="pun">=</span> <span class="fn">MutableStateFlow</span><span class="pun">(</span><span class="kw">false</span><span class="pun">)</span>
+
+  <span class="cm">// StateFlow: versão pública, somente leitura</span>
+  <span class="kw">val</span> <span class="prop">virado</span><span class="pun">:</span> StateFlow<span class="pun">&lt;</span><span class="kw">Boolean</span><span class="pun">&gt; =</span> _virado
+
+  <span class="kw">fun</span> <span class="fn">virar</span><span class="pun">() {</span>
+    _virado<span class="pun">.</span>value <span class="pun">=</span> <span class="pun">!</span>_virado<span class="pun">.</span>value
+  <span class="pun">}</span>
+
+  <span class="kw">fun</span> <span class="fn">responder</span><span class="pun">(</span>acertou<span class="pun">:</span> <span class="kw">Boolean</span><span class="pun">) {</span>
+    <span class="cm">// Lógica de pontuação aqui</span>
+    _virado<span class="pun">.</span>value <span class="pun">=</span> <span class="kw">false</span>   <span class="cm">// reseta para o próximo cartão</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>Jetpack Compose — UI declarativa</strong>
+          <p>Compose é a UI moderna do Android: você descreve a tela como funções, sem XML.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>CartaoUI.kt</span><button class="copy-btn" data-copy="kotlin-s3">Copiar</button></div>
+            <pre id="kotlin-s3"><span class="kw">import</span> androidx<span class="pun">.</span>compose<span class="pun">.</span>runtime<span class="pun">.</span><span class="pun">*</span>
+<span class="kw">import</span> androidx<span class="pun">.</span>compose<span class="pun">.</span>material3<span class="pun">.</span><span class="pun">*</span>
+
+<span class="cm">// @Composable = função de UI (como componente React)</span>
+<span class="pun">@</span>Composable
+<span class="kw">fun</span> <span class="fn">CartaoCard</span><span class="pun">(</span>cartao<span class="pun">:</span> <span class="fn">Cartao</span><span class="pun">) {</span>
+  <span class="cm">// remember + mutableStateOf = estado local do Composable</span>
+  <span class="kw">var</span> <span class="prop">virado</span> <span class="kw">by</span> <span class="fn">remember</span> <span class="pun">{</span> <span class="fn">mutableStateOf</span><span class="pun">(</span><span class="kw">false</span><span class="pun">) }</span>
+
+  <span class="fn">Card</span><span class="pun">(</span>
+    modifier <span class="pun">=</span> Modifier
+      <span class="pun">.</span><span class="fn">fillMaxWidth</span><span class="pun">()</span>
+      <span class="pun">.</span><span class="fn">clickable</span> <span class="pun">{</span> virado <span class="pun">=</span> <span class="pun">!</span>virado <span class="pun">}</span>
+  <span class="pun">) {</span>
+    <span class="fn">Text</span><span class="pun">(</span>
+      text <span class="pun">=</span> <span class="kw">if</span> <span class="pun">(</span>virado<span class="pun">)</span> cartao<span class="pun">.</span>verso <span class="kw">else</span> cartao<span class="pun">.</span>frente<span class="pun">,</span>
+      style <span class="pun">=</span> MaterialTheme<span class="pun">.</span>typography<span class="pun">.</span>headlineMedium
+    <span class="pun">)</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 Kotlin também roda no <strong>backend com Ktor</strong> e no <strong>browser via Kotlin/JS</strong> — uma linguagem para todas as plataformas.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Swift
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-swift">
+      <h2>🔴 Swift — App iOS de Cartões</h2>
+      <p class="subtitle">Swift é a linguagem da Apple para iOS, macOS e watchOS. Segura, rápida e com SwiftUI para interfaces declarativas.</p>
+
+      <div class="preview-box">
+        <div style="text-align:center;">
+          <div class="mc" id="mc-swift">
+            <div class="mc-inner">
+              <div class="mc-face mc-front" style="background:linear-gradient(135deg,#7d1a0a,#f05138)"><div class="mc-label">Frente</div><div class="mc-text">O que é Swift?</div></div>
+              <div class="mc-face mc-back"  style="background:linear-gradient(135deg,#1a1a1a,#3a3a3a)"><div class="mc-label">Resposta</div><div class="mc-text">Linguagem iOS da Apple</div></div>
+            </div>
+          </div>
+          <div class="preview-hint">👆 Clique para virar</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <strong>Struct com protocol Identifiable</strong>
+          <p>Swift usa <code>struct</code> para modelos de dados. <code>Identifiable</code> permite usar o cartão em listas SwiftUI.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>Cartao.swift</span><button class="copy-btn" data-copy="swift-s1">Copiar</button></div>
+            <pre id="swift-s1"><span class="kw">import</span> Foundation
+
+<span class="cm">// Identifiable: tem um "id" único (necessário para ForEach SwiftUI)</span>
+<span class="cm">// Codable: pode ser serializado/deserializado de JSON</span>
+<span class="kw">struct</span> <span class="fn">Cartao</span><span class="pun">:</span> <span class="fn">Identifiable</span><span class="pun">,</span> <span class="fn">Codable</span> <span class="pun">{</span>
+    <span class="kw">let</span>  <span class="prop">id</span><span class="pun">:</span>      <span class="fn">UUID</span> <span class="pun">=</span> <span class="fn">UUID</span><span class="pun">()</span>   <span class="cm">// UUID gerado automaticamente</span>
+    <span class="kw">var</span>  <span class="prop">frente</span><span class="pun">:</span>  <span class="kw">String</span>
+    <span class="kw">var</span>  <span class="prop">verso</span><span class="pun">:</span>   <span class="kw">String</span>
+    <span class="kw">var</span>  <span class="prop">acertos</span><span class="pun">:</span> <span class="kw">Int</span> <span class="pun">=</span> <span class="num">0</span>
+    <span class="kw">var</span>  <span class="prop">erros</span><span class="pun">:</span>   <span class="kw">Int</span> <span class="pun">=</span> <span class="num">0</span>
+
+    <span class="cm">// Propriedade computada: aproveitamento em %</span>
+    <span class="kw">var</span> <span class="prop">aproveitamento</span><span class="pun">:</span> <span class="kw">Double</span> <span class="pun">{</span>
+        <span class="kw">let</span> <span class="prop">total</span> <span class="pun">=</span> acertos <span class="pun">+</span> erros
+        <span class="kw">return</span> total <span class="pun">&gt;</span> <span class="num">0</span> <span class="pun">?</span> <span class="fn">Double</span><span class="pun">(</span>acertos<span class="pun">) /</span> <span class="fn">Double</span><span class="pun">(</span>total<span class="pun">) *</span> <span class="num">100</span> <span class="pun">:</span> <span class="num">0</span>
+    <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <strong>ObservableObject — estado compartilhado</strong>
+          <p><code>@Published</code> notifica a SwiftUI automaticamente quando o valor muda — equivalente ao <code>useState</code> do React.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>BaralhoStore.swift</span><button class="copy-btn" data-copy="swift-s2">Copiar</button></div>
+            <pre id="swift-s2"><span class="kw">import</span> Combine
+
+<span class="cm">// ObservableObject: a SwiftUI "observa" as mudanças</span>
+<span class="kw">class</span> <span class="fn">BaralhoStore</span><span class="pun">:</span> <span class="fn">ObservableObject</span> <span class="pun">{</span>
+
+  <span class="cm">// @Published: qualquer mudança re-renderiza a View</span>
+  <span class="pun">@</span><span class="fn">Published</span> <span class="kw">var</span> <span class="prop">cartoes</span><span class="pun">: [</span>Cartao<span class="pun">] = []</span>
+  <span class="pun">@</span><span class="fn">Published</span> <span class="kw">var</span> <span class="prop">indiceAtual</span><span class="pun">:</span> <span class="kw">Int</span> <span class="pun">=</span> <span class="num">0</span>
+
+  <span class="kw">var</span> <span class="prop">cartaoAtual</span><span class="pun">:</span> Cartao<span class="pun">? {</span>
+    <span class="kw">guard</span> indiceAtual <span class="pun">&lt;</span> cartoes<span class="pun">.</span>count <span class="kw">else</span> <span class="pun">{</span> <span class="kw">return nil</span> <span class="pun">}</span>
+    <span class="kw">return</span> cartoes<span class="pun">[</span>indiceAtual<span class="pun">]</span>
+  <span class="pun">}</span>
+
+  <span class="kw">func</span> <span class="fn">acertar</span><span class="pun">() {</span>
+    cartoes<span class="pun">[</span>indiceAtual<span class="pun">].</span>acertos <span class="pun">+=</span> <span class="num">1</span>
+    indiceAtual <span class="pun">+=</span> <span class="num">1</span>
+  <span class="pun">}</span>
+
+  <span class="kw">func</span> <span class="fn">errar</span><span class="pun">() {</span>
+    cartoes<span class="pun">[</span>indiceAtual<span class="pun">].</span>erros <span class="pun">+=</span> <span class="num">1</span>
+    indiceAtual <span class="pun">+=</span> <span class="num">1</span>
+  <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <strong>SwiftUI — View do cartão com animação 3D</strong>
+          <p><code>.rotation3DEffect</code> faz o efeito de virada nativo no iOS, e <code>withAnimation</code> cria a transição suave.</p>
+          <div class="code-wrap">
+            <div class="code-header"><span>CartaoView.swift</span><button class="copy-btn" data-copy="swift-s3">Copiar</button></div>
+            <pre id="swift-s3"><span class="kw">import</span> SwiftUI
+
+<span class="kw">struct</span> <span class="fn">CartaoView</span><span class="pun">:</span> <span class="fn">View</span> <span class="pun">{</span>
+    <span class="kw">let</span>  <span class="prop">cartao</span><span class="pun">:</span> Cartao
+
+    <span class="cm">// @State = estado local da View (como useState)</span>
+    <span class="pun">@</span><span class="fn">State</span> <span class="kw">private var</span> <span class="prop">virado</span> <span class="pun">=</span> <span class="kw">false</span>
+    <span class="pun">@</span><span class="fn">State</span> <span class="kw">private var</span> <span class="prop">angulo</span><span class="pun">:</span> <span class="kw">Double</span> <span class="pun">=</span> <span class="num">0</span>
+
+    <span class="kw">var</span> <span class="prop">body</span><span class="pun">:</span> <span class="kw">some</span> View <span class="pun">{</span>
+        <span class="fn">ZStack</span> <span class="pun">{</span>
+            <span class="cm">// Mostra frente ou verso dependendo do ângulo</span>
+            <span class="kw">if</span> angulo <span class="pun">&lt;</span> <span class="num">90</span> <span class="pun">{</span>
+                <span class="fn">Text</span><span class="pun">(</span>cartao<span class="pun">.</span>frente<span class="pun">).</span><span class="fn">font</span><span class="pun">(.</span>title<span class="pun">)</span>
+            <span class="pun">}</span> <span class="kw">else</span> <span class="pun">{</span>
+                <span class="fn">Text</span><span class="pun">(</span>cartao<span class="pun">.</span>verso<span class="pun">).</span><span class="fn">font</span><span class="pun">(.</span>title<span class="pun">)</span>
+            <span class="pun">}</span>
+        <span class="pun">}</span>
+        <span class="cm">// Efeito 3D nativo do SwiftUI</span>
+        <span class="pun">.</span><span class="fn">rotation3DEffect</span><span class="pun">(.</span><span class="fn">degrees</span><span class="pun">(</span>angulo<span class="pun">),</span> axis<span class="pun">: (</span>x<span class="pun">:</span> <span class="num">0</span><span class="pun">,</span> y<span class="pun">:</span> <span class="num">1</span><span class="pun">,</span> z<span class="pun">:</span> <span class="num">0</span><span class="pun">))</span>
+        <span class="pun">.</span><span class="fn">onTapGesture</span> <span class="pun">{</span>
+            <span class="cm">// withAnimation aplica a transição suave</span>
+            <span class="fn">withAnimation</span><span class="pun">(.</span><span class="fn">easeInOut</span><span class="pun">(</span>duration<span class="pun">:</span> <span class="num">0.5</span><span class="pun">)) {</span>
+                angulo <span class="pun">=</span> virado <span class="pun">?</span> <span class="num">0</span> <span class="pun">:</span> <span class="num">180</span>
+                virado<span class="pun">.</span><span class="fn">toggle</span><span class="pun">()</span>
+            <span class="pun">}</span>
+        <span class="pun">}</span>
+    <span class="pun">}</span>
+<span class="pun">}</span></pre>
+          </div>
+        </div>
+      </div>
+      <div class="tip">💡 Swift usa <strong>Xcode</strong> como IDE. Para rodar no iPhone real, você precisa de um Mac e (para distribuição) de uma conta de desenvolvedor Apple.</div>
+    </div>
+
+    <!-- ════════════════════════════════════════════
+         PAGE: Compare
+    ════════════════════════════════════════════ -->
+    <div class="page" id="page-compare">
+      <h2>📊 Comparação Geral</h2>
+      <p class="subtitle">11 linguagens, cada uma com seu papel. Escolha a certa para cada situação.</p>
+
+      <h3>Responsabilidade de cada linguagem</h3>
+      <table>
+        <thead><tr><th>Linguagem</th><th>Categoria</th><th>O que faz no Memory Cards</th></tr></thead>
+        <tbody>
+          <tr><td>HTML</td><td>Estrutura web</td><td>Esqueleto do cartão, elementos e semântica</td></tr>
+          <tr><td>CSS</td><td>Estilo web</td><td>Cores, layout, animação 3D de virada</td></tr>
+          <tr><td>JavaScript</td><td>Comportamento web</td><td>Virar, salvar localStorage, embaralhar</td></tr>
+          <tr><td>TypeScript</td><td>JS tipado</td><td>Modelos tipados, enums de estado, segurança de tipos</td></tr>
+          <tr><td>Python</td><td>Backend / CLI</td><td>App de terminal, API Flask/FastAPI, importar CSV</td></tr>
+          <tr><td>React</td><td>UI Framework (JS)</td><td>Componentes reutilizáveis, SPA, gerenciamento de estado</td></tr>
+          <tr><td>Vue.js</td><td>UI Framework (JS)</td><td>SFC, v-for, computed, watch, Composition API</td></tr>
+          <tr><td>SQL</td><td>Banco de dados</td><td>Armazenar cartões, JOIN para relatórios, ORDER BY RANDOM()</td></tr>
+          <tr><td>Go</td><td>Backend compilado</td><td>API REST de alta performance, goroutines para lembretes</td></tr>
+          <tr><td>Kotlin</td><td>Android</td><td>App nativo Android com Compose e ViewModel</td></tr>
+          <tr><td>Swift</td><td>iOS / macOS</td><td>App nativo iOS com SwiftUI e animação 3D nativa</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Dificuldade e plataforma</h3>
+      <table>
+        <thead><tr><th>Linguagem</th><th>Dificuldade</th><th>Plataforma</th><th>Para começar</th></tr></thead>
+        <tbody>
+          <tr><td>HTML</td><td>⭐ Fácil</td><td>Web</td><td>Qualquer editor de texto</td></tr>
+          <tr><td>CSS</td><td>⭐⭐ Médio</td><td>Web</td><td>Qualquer editor de texto</td></tr>
+          <tr><td>JavaScript</td><td>⭐⭐ Médio</td><td>Web / Node</td><td>Qualquer editor de texto</td></tr>
+          <tr><td>TypeScript</td><td>⭐⭐ Médio</td><td>Web / Node</td><td>VS Code + <code>npm i typescript</code></td></tr>
+          <tr><td>Python</td><td>⭐ Fácil</td><td>CLI / Servidor</td><td>python.org + VS Code</td></tr>
+          <tr><td>React</td><td>⭐⭐⭐ Avançado</td><td>Web SPA</td><td><code>npm create vite@latest</code></td></tr>
+          <tr><td>Vue.js</td><td>⭐⭐ Médio</td><td>Web SPA</td><td><code>npm create vue@latest</code></td></tr>
+          <tr><td>SQL</td><td>⭐⭐ Médio</td><td>Banco de dados</td><td>SQLite Browser ou DBeaver</td></tr>
+          <tr><td>Go</td><td>⭐⭐ Médio</td><td>Servidor</td><td>go.dev + VS Code</td></tr>
+          <tr><td>Kotlin</td><td>⭐⭐⭐ Avançado</td><td>Android</td><td>Android Studio</td></tr>
+          <tr><td>Swift</td><td>⭐⭐⭐ Avançado</td><td>iOS / macOS</td><td>Xcode (Mac obrigatório)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>Arquitetura completa do sistema</h3>
+      <div class="code-wrap">
+        <div class="code-header"><span>Visão geral</span></div>
+        <pre style="line-height:2;">
+<span class="cm">┌──── FRONT-END WEB ──────────────────────────────────┐</span>
+<span class="cm">│  HTML + CSS + JS (puro)  ou  React / Vue + TS        │</span>
+<span class="cm">│  └─ localStorage (offline) ou fetch() para API       │</span>
+<span class="cm">└─────────────────────────┬──────────────────────────-┘</span>
+                          <span class="cm">│ HTTP / REST</span>
+<span class="cm">┌──── BACK-END ───────────▼──────────────────────────-┐</span>
+<span class="cm">│  Python (Flask/FastAPI)  ou  Go (net/http)           │</span>
+<span class="cm">│  └─ ORM / SQL → banco de dados (SQLite / Postgres)   │</span>
+<span class="cm">└─────────────────────────────────────────────────────┘</span>
+
+<span class="cm">┌──── MOBILE ─────────────────────────────────────────┐</span>
+<span class="cm">│  Android: Kotlin + Jetpack Compose + ViewModel       │</span>
+<span class="cm">│  iOS:     Swift  + SwiftUI + ObservableObject        │</span>
+<span class="cm">│  Ambos podem consumir a mesma API REST               │</span>
+<span class="cm">└─────────────────────────────────────────────────────┘</span></pre>
+      </div>
+
+      <div class="tip">🚀 <strong>Caminho recomendado:</strong> HTML → CSS → JS → TypeScript → React (web) · Python → SQL → Go (backend) · Kotlin ou Swift (mobile)</div>
+    </div>
+
+  </div><!-- /content -->
+</div><!-- /layout -->
+
+<script>
+/* ── Navigation ── */
+const navLinks = document.querySelectorAll('nav a[data-page]');
+navLinks.forEach(a => {
+  a.addEventListener('click', () => {
+    navLinks.forEach(x => x.classList.remove('active'));
+    a.classList.add('active');
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.getElementById('page-' + a.dataset.page).classList.add('active');
+  });
+});
+
+/* ── Flip preview cards ── */
+['mc-html','mc-css','mc-js','mc-react','mc-ts','mc-vue','mc-kotlin','mc-swift'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.addEventListener('click', () => el.classList.toggle('flipped'));
+});
+
+/* ── Copy buttons ── */
+document.querySelectorAll('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.copy);
+    if (!target) return;
+    // get text content without HTML tags
+    const text = target.innerText;
+    navigator.clipboard.writeText(text).then(() => {
+      btn.textContent = 'Copiado ✓';
+      setTimeout(() => btn.textContent = 'Copiar', 1800);
+    }).catch(() => {
+      btn.textContent = 'Erro';
+      setTimeout(() => btn.textContent = 'Copiar', 1800);
+    });
+  });
+});
+</script>
+</body>
+</html>
