@@ -218,6 +218,29 @@
       border-radius: 99px; font-weight: 600;
     }
     .tag-blue { background: #dbeafe; color: #1e40af; }
+
+    /* ── Mobile ── */
+    @media (max-width: 600px) {
+      header { padding: 0 12px; height: auto; min-height: 56px; flex-wrap: wrap; gap: 8px; padding-top: 10px; padding-bottom: 10px; }
+      .header-actions { gap: 6px; flex-wrap: wrap; }
+      .header-actions .btn { font-size: 12px; padding: 5px 10px; }
+      main { padding: 16px 12px 60px; }
+      .deck-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .deck-card { padding: 14px; }
+      .deck-add-btn { padding: 14px; }
+      .section-header { flex-wrap: wrap; gap: 8px; }
+      .section-header > div { display: flex; gap: 6px; flex-wrap: wrap; }
+      .card-item { flex-direction: column; }
+      .card-item-fields { grid-template-columns: 1fr; }
+      .flip-face .face-text { font-size: 17px; }
+      .study-actions { gap: 10px; }
+      .study-actions .btn { flex: 1; justify-content: center; font-size: 15px; padding: 12px 8px; }
+      .result-stats { gap: 14px; }
+      .result-stat .num { font-size: 26px; }
+      .modal { padding: 18px; }
+      .modal-actions { flex-wrap: wrap; }
+      .modal-actions .btn { flex: 1; justify-content: center; }
+    }
   </style>
 </head>
 <body>

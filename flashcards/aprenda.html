@@ -115,18 +115,34 @@
     tr:last-child td { border-bottom:none; }
     td:first-child { color:var(--accent); font-weight:600; }
 
+    /* ── Mobile hamburger ── */
+    .mob-nav-toggle{display:none;background:none;border:none;color:var(--text);cursor:pointer;padding:6px;font-size:20px;line-height:1}
+    .mob-nav-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.6);z-index:190}
+    .mob-nav-overlay.open{display:block}
     @media(max-width:700px){
-      nav { display:none; }
-      .page { padding:20px 16px 60px; }
+      header { flex-wrap:wrap; height:auto; min-height:54px; padding: 8px 12px; gap:6px; }
+      header h1 { font-size:14px; }
+      .mob-nav-toggle{display:flex;align-items:center;margin-right:6px}
+      nav{position:fixed;left:-100%;top:0;height:100vh;z-index:195;transition:left .25s;width:240px}
+      nav.open{left:0}
+      .page{padding:20px 12px 60px}
+      table{font-size:12px}
+      pre{font-size:11.5px;padding:14px}
+      .preview-box{padding:20px 12px}
+      .mc{width:220px;height:134px}
     }
   </style>
 </head>
 <body>
 
+<div class="mob-nav-overlay" id="mob-overlay"></div>
 <header>
-  <h1>Memory<span>Cards</span> — <span style="color:var(--green)">Guia Multi-Linguagem</span></h1>
-  <div style="display:flex;gap:12px;align-items:center;">
-    <a class="back-link" href="guia-completo.html">🌐 Guia Completo</a>
+  <div style="display:flex;align-items:center;gap:4px;">
+    <button class="mob-nav-toggle" id="mob-toggle" aria-label="Menu">☰</button>
+    <h1>Memory<span>Cards</span> — <span style="color:var(--green)">Guia</span></h1>
+  </div>
+  <div style="display:flex;gap:10px;align-items:center;">
+    <a class="back-link" href="guia-completo.html">🌐 Guia</a>
     <a class="back-link" href="index.html">← App</a>
   </div>
 </header>
@@ -1438,6 +1454,15 @@ document.querySelectorAll('.copy-btn').forEach(btn => {
     });
   });
 });
+// Mobile nav toggle
+const mobToggle = document.getElementById('mob-toggle');
+const mobOverlay = document.getElementById('mob-overlay');
+const navEl = document.querySelector('nav');
+function openNav(){ navEl.classList.add('open'); mobOverlay.classList.add('open'); }
+function closeNav(){ navEl.classList.remove('open'); mobOverlay.classList.remove('open'); }
+mobToggle.addEventListener('click', () => navEl.classList.contains('open') ? closeNav() : openNav());
+mobOverlay.addEventListener('click', closeNav);
+navEl.querySelectorAll('a').forEach(a => a.addEventListener('click', closeNav));
 </script>
 </body>
 </html>
